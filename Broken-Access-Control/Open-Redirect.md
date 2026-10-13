@@ -4,7 +4,7 @@
 
 \* Categoría OWASP Top 10: A01:2021 – Broken Access Control
 
-\* Control OWASP ASVS: \[Formato VN.N.N]
+\* Control OWASP ASVS: Formato V4.1.1
 
 \* Documentado por: Alejandro Jiménez Carballar
 
@@ -30,29 +30,29 @@ https://sitio-inseguro.com/admin/ver\_todos\_los\_mails.php
 
 
 
-El código que se ejecutaría normalmente en el php seria el siguiente: 
+El código que se ejecutaría normalmente en el php seria el siguiente:
 
 
 
 ( Se comprueba que estemos autenticados, no que seamos admin )
 
-if (isset($\_SESSION\[‘loggedin’]) { 
+if (isset($\_SESSION\[‘loggedin’]) {
 
 
 
 ( Cargamos los emails )
 
-cargar\_emails(); 
+cargar\_emails();
 
-} 
+}
 
 
 
 ( Si no estamos autenticados volvemos al login )
 
-else { 
+else {
 
-return\_to\_login(); 
+return\_to\_login();
 
 }
 
@@ -66,7 +66,7 @@ Con esta vulnerabilidad por ejemplo, la aplicación es vulnerable ya que un usua
 
 
 
-Una forma de mitigar esto, es usar este código: 
+Una forma de mitigar esto, es usar este código:
 
 
 
@@ -74,23 +74,23 @@ Una forma de mitigar esto, es usar este código:
 
 ( Si en la sesión esta autenticado y en la sesión es admin, entonces se cargan los emails )
 
-if (isset($\_SESSION\[‘loggedin’]) \&\& $\_SESSION\[‘isadmin’] == true)) { 
+if (isset($\_SESSION\[‘loggedin’]) \&\& $\_SESSION\[‘isadmin’] == true)) {
 
 
 
 ( Aquí cargan los emails )
 
-cargar\_emails(); 
+cargar\_emails();
 
-} 
+}
 
 
 
 (Si no se cumple alguna de las condiciones de antes, te devuelve al login )
 
-else { 
+else {
 
-return\_to\_login(); 
+return\_to\_login();
 
 }
 
