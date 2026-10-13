@@ -13,4 +13,4 @@ En este código se muestra como información como la contraseña es emitida, pud
 
 ## Código mitigado/seguro
 * logging.info(f"El usuario {usuario} ha iniciado sesión")
-En este ejemplo, la contraseña no es revelada por lo que un agente externo no sería capaz de interceptarla.
+En este ejemplo, la contraseña no es revelada por lo que un agente externo no sería capaz de interceptarla. Es una buena práctica de código.
