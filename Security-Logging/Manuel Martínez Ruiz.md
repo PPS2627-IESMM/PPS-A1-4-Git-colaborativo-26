@@ -1,7 +1,7 @@
-# [Nombre de la vulnerabilidad]
+# Exposición de datos sensibles en logs de aplicación
 ## Clasificación
-* Categoría OWASP Top 10: [Formato AXX:XXXX-Nombre]
-* Control OWASP ASVS: [Formato VN.N.N]
+* Categoría OWASP Top 10: [A09:2025-Security Logging and Alerting Failures]
+* Control OWASP ASVS: [V16.2.5]
 * Documentado por: [Manuel Martínez Ruiz]
 ---
 ## Descripción
