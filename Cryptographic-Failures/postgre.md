@@ -82,7 +82,6 @@ SELECT usename, passwd FROM pg_shadow WHERE usename = 'app_backend';
 ```
 ---
 
-##Webgrafía
 ## Referencias
 - [OWASP Top 10:2021 - A02 Cryptographic Failures](https://owasp.org/Top10/2021/A02_2021-Cryptographic_Failures/)
 - [OWASP Top 10:2025 - A04 Fallos Criptográficos (Español)](https://owasp.org/Top10/2025/es/A04_2025-Cryptographic_Failures/)
