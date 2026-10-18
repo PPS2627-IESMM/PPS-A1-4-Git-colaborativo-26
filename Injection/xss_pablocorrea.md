@@ -15,7 +15,7 @@ En un entorno de producción, puede tener graves consecuencias para los usuarios
 - Robar credenciales (dependiendo del ataque, puede llegar a nivel de navegador).
 
 ## Ejemplo de código vulnerable
-```html
+```php
     <form action="procesar.php" method="GET">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre">
@@ -32,7 +32,7 @@ Si no se hace una sanitización de ese campo, se podría usar código JavaScript
 
 
 ## Código mitigado/seguro
-```html
+```php
     <form action="procesar.php" method="GET">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre">
