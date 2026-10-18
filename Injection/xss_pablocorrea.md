@@ -1,7 +1,7 @@
 # Cross Site Scripting (XSS) Reflejado
 ## Clasificación
-* Categoría OWASP Top 10: Formato A05:2021 - Inyección
-* Control OWASP ASVS: Formato V5.2.7
+* Categoría OWASP Top 10: A05:2021 - Inyección
+* Control OWASP ASVS: V5.2.7
 * Documentado por: Pablo Correa Cuendes
 ---
 ## Descripción
@@ -15,7 +15,7 @@ En un entorno de producción, puede tener graves consecuencias para los usuarios
 - Robar credenciales (dependiendo del ataque, puede llegar a nivel de navegador).
 
 ## Ejemplo de código vulnerable
-```
+```html
     <form action="procesar.php" method="GET">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre">
@@ -25,14 +25,14 @@ En un entorno de producción, puede tener graves consecuencias para los usuarios
 ```
 En este ejemplo, tenemos un formulario donde el usuario puede introducir su nombre. Es un ejemplo muy sencillo. El atacante podría introducir algo como esto en ese campo:
 
-```
+```javascript
 <script>alert('XSS')</script>
 ```
 Si no se hace una sanitización de ese campo, se podría usar código JavaScript para ejecutar código como ese. En este caso, solo se mostraría una alerta inofensiva en la pantalla del usuario, pero se puede ejecutar cualquier código.
 
 
 ## Código mitigado/seguro
-```
+```html
     <form action="procesar.php" method="GET">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre">
