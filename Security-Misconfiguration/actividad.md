@@ -1,13 +1,24 @@
-# [Nombre de la vulnerabilidad]
-## Clasificación
-* Categoría OWASP Top 10: A05:2021-Security Misconfiguration
-* Control OWASP ASVS: V7.4.1
-* Documentado por: Adrián Rojas
----
-## Descripción
-Explica brévemente en qué consiste la vulnerabilidad y cómo puede afectar a una plicativo en producción.
+# Exposición de información sensible en mensajes de error (Stack Trace Leakage)
 
-## Ejemplo de código vulerable
+## Clasificación
+- Categoría OWASP Top 10: A05:2021-Security Misconfiguration
+- Control OWASP ASVS: V7.4.1
+- Documentado por: Adrián Rojas
+
+---
+
+## Descripción
+Ocurre cuando la aplicación no gestiona adecuadamente las excepciones internas y devuelve al usuario trazas del sistema (*stack traces*) o errores de base de datos.
+
+**Impacto en producción:**
+- Revela rutas internas del servidor (`/home/ubuntu/...`) y versiones de dependencias.
+- Facilita ataques dirigidos (como inyecciones SQL) al mostrar la consulta fallida completa.
+
+---
+
+## Ejemplo de código vulnerable
+
+```javascript
 // Importamos Express (framework web) y el módulo propio de acceso a la base de datos
 const express = require('express');
 const db = require('./db');
@@ -45,14 +56,22 @@ app.use((err, req, res, next) => {
 
 // Arrancamos el servidor en el puerto 3000
 app.listen(3000);
+```
 
-si un atacante pide /usuarios/, recibe algo como esto:
+Si un atacante pide `/usuarios/'`, recibe algo como esto:
+
+```json
 {
   "error": "ER_PARSE_ERROR: You have an error in your SQL syntax near ''' at line 1",
   "stack": "Error: ER_PARSE_ERROR ...\n    at Query.Sequence._packetToError (/home/ubuntu/app/node_modules/mysql/lib/protocol/sequences/Sequence.js:47:14)\n    at /home/ubuntu/app/db.js:42:11"
 }
+```
+
+---
 
 ## Código mitigado/seguro
+
+```javascript
 // Importamos Express, el módulo de crypto (para generar IDs únicos),
 // la base de datos y un logger interno (por ejemplo winston o pino)
 const express = require('express');
@@ -103,10 +122,13 @@ app.use((err, req, res, next) => {
 
 // Arrancamos el servidor en el puerto 3000
 app.listen(3000);
+```
 
-con este codigo el atanque solo recibiria esto:
+Con este código el atacante solo recibiría esto:
 
+```json
 {
   "error": "Error interno del servidor",
   "referencia": "3f2a9c1e-7b64-4d8a-9a51-0c2d6e4b8f10"
 }
+```
