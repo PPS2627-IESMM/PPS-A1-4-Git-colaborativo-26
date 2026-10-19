@@ -1,7 +1,7 @@
 # [Nombre de la vulnerabilidad]
 Cross Site Scripting (XSS) Reflejado
 ## Clasificación
-* Categoría OWASP Top 10: A03:2021-Inyección
+* Categoría OWASP Top 10: A05:2025-Inyección
 * Control OWASP ASVS: V5.3.3
 * Documentado por: Clara Frigolet Paiva
 ---
@@ -24,7 +24,7 @@ Lenguaje: HTML con JavaScript
 
     <h1>Buscador de productos</h1>
 
-    <!-- Formulario que envía la búsqueda que haga el usuario 	mediante la URL -->
+    <!-- Formulario que envía la búsqueda que haga el usuario mediante la URL -->
     <form action="" method="GET">
         <input type="text" name="busqueda"
                placeholder="Escribe un producto">
@@ -46,7 +46,7 @@ Lenguaje: HTML con JavaScript
         // la variable busqueda contendrá "zapatos".
         const busqueda = parametros.get("busqueda");
 
-        // Comprobamos que el usuario haya introducido una 		búsqueda.
+        // Comprobamos que el usuario haya introducido una búsqueda.
         if (busqueda) {
 
             // VULNERABILIDAD:
@@ -66,11 +66,12 @@ Ejemplo de búsqueda normal:
 https://tienda.ejemplo/?busqueda=zapatos
 
 Ejemplo de búsqueda maliciosa: 
-https://tienda.ejemplo/?busqueda=<script>alert('Has sido hackeado')</script>
+https://tienda.ejemplo/?busqueda=<script>alert('Has sido hackeado')</script> -> Si la web no filtrara correctamente lo que introduce el usuario, esta dirección podría ejecutar un script que enseñará un mensaje flotante en la pantalla. En este caso es un script inofensivo, pero un atacante real podría aprovechar esta vulnerabilidad para ejecutar código malicioso.
 
 ## Código mitigado/seguro
 Incluye el código anterior corregido (sanitizado)
 ```html
+
 <script>
 
     // Se obtienen los parámetros de la URL
@@ -91,9 +92,9 @@ Incluye el código anterior corregido (sanitizado)
         const mensaje = document.createElement("p");
 
         // CORRECCIÓN DE LA VULNERABILIDAD:
-        // Usamos textContent en lugar de innerHTML ya que 		inserta el valor como texto plano.
-        // Aunque la búsqueda contenga etiquetas HTML o 		JavaScript,
-        //textContent no las interpreta como código 			ejecutable.
+        // Usamos textContent en lugar de innerHTML ya que inserta el valor como texto plano.
+        // Aunque la búsqueda contenga etiquetas HTML o JavaScript,
+        //textContent no las interpreta como código ejecutable.
         mensaje.textContent = "Has buscado: " + busqueda;
 
         // Finalmente se añade el párrafo al elemento de resultados.
