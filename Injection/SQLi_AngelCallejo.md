@@ -54,5 +54,4 @@ def buscar_usuario_seguro(nombre_usuario):
 ### Explicación
 
 `?` reserva el lugar del valor sin incorporarlo al texto SQL. `cursor.execute(consulta, (nombre_usuario,))` pasa el nombre como parámetro y SQLite lo trata como dato literal, aunque contenga comillas u otros caracteres especiales. Esta separación entre código y datos evita que el usuario cambie la intención de la consulta.
-
 La parametrización debe utilizarse también en consultas `INSERT`, `UPDATE` y `DELETE`. Para nombres de tablas, columnas u opciones de ordenación, que no pueden pasarse como valores, se debe utilizar una lista permitida definida por la aplicación.
