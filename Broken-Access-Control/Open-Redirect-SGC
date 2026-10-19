@@ -1,0 +1,112 @@
+# Redirección Abierta (Open Redirect)
+## Broken Access Control
+* Categoría OWASP Top 10: A01:2021-Broken Access Control
+* Control OWASP ASVS: 4.1.1
+* Documentado por: Samuel Guerra Castañeda
+---
+## Descripción
+La vulnerabilidad denominada «Redirección Abierta» (Open Redirect) se produce cuando una aplicación web recibe un parámetro dentro de la URL que no ha sido validado y contiene información sobre la dirección a la que se debe redirigir al usuario final mediante un enlace de redirección HTTP. Esta URL puede ser modificada por un actor malintencionado para dirigir al usuario a un sitio web malicioso de terceros.
+
+En un aplicativo en producción, esto afecta gravemente la confianza del usuario, ya que facilita ataques de **Phishing** altamente efectivos (el enlace inicia en el dominio legítimo de la empresa), robo de tokens de autenticación/OAuth en las redirecciones, o la descarga no autorizada de malware.
+## Ejemplo de código vulerable
+
+// Define el endpoint /redirect de la aplicación web.
+
+//Caso en Java
+@WebServlet("/redirect")
+public class RedirectServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        // LÍNEA VULNERABLE (1):
+        // Se obtiene el parámetro "url" enviado por el usuario.
+        // Su contenido no es confiable, ya que el usuario puede
+        // modificarlo para indicar una dirección externa.
+        String url = request.getParameter("url");
+
+        // Se comprueba únicamente que el parámetro exista
+        // y que no esté vacío.
+        // Esta comprobación NO valida que el destino sea seguro.
+        if (url != null && !url.isBlank()) {
+
+            // LÍNEA VULNERABLE (2) - FALLO PRINCIPAL:
+            // Se utiliza directamente la URL proporcionada por
+            // el usuario, sin comprobar el dominio ni el destino.
+            //
+            // Un atacante podría manipular el parámetro para
+            // redirigir a la víctima a una web externa maliciosa.
+            response.sendRedirect(url);
+
+        } else {
+
+            // Si no se proporciona una URL, se redirige
+            // a la página de inicio de la aplicación.
+            response.sendRedirect("/inicio");
+        }
+    }
+}
+
+## Código mitigado/seguro
+//Caso en Java
+// Define el endpoint /redirect de la aplicación web.
+@WebServlet("/redirect")
+public class SafeRedirectServlet extends HttpServlet {
+
+    // MEDIDA DE SEGURIDAD (1):
+    // Se establece una lista de destinos permitidos.
+    // Las claves son identificadores controlados por la aplicación
+    // y los valores son rutas internas definidas por el servidor.
+    //
+    // El usuario no puede introducir directamente una URL arbitraria
+    // como destino de la redirección.
+    private static final Map<String, String> DESTINATIONS = Map.of(
+        "inicio", "/inicio",
+        "perfil", "/perfil",
+        "panel", "/panel"
+    );
+
+    @Override
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        // Se obtiene el identificador del destino solicitado.
+        // Aunque el valor procede del usuario, no se utiliza
+        // directamente como una URL de redirección.
+        String destination = request.getParameter("destination");
+
+        // MEDIDA DE SEGURIDAD (2):
+        // Se busca el identificador en la lista permitida.
+        // Si no existe, el resultado será null.
+        //
+        // Esto impide aceptar directamente direcciones externas
+        // que no estén contempladas en la configuración.
+        String path = DESTINATIONS.get(destination);
+
+        // MEDIDA DE SEGURIDAD (3):
+        // Se rechazan los destinos desconocidos o no autorizados.
+        // Se responde con HTTP 400 y se termina la ejecución.
+        if (path == null) {
+            response.sendError(
+                HttpServletResponse.SC_BAD_REQUEST,
+                "Destino de redireccion no valido"
+            );
+            return;
+        }
+
+        // MEDIDA DE SEGURIDAD (4):
+        // Se añade el contexto de la aplicación a la ruta autorizada.
+        // El destino procede del mapa definido en el servidor,
+        // no de una URL arbitraria proporcionada por el usuario.
+        String safeUrl = request.getContextPath() + path;
+
+        // La redirección solo se realiza después de validar
+        // que el identificador pertenece a la lista permitida.
+        response.sendRedirect(safeUrl);
+    }
+}
