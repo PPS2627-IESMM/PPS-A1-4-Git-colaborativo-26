@@ -1,6 +1,6 @@
 # Inyección SQL (SQLi)
 ## Clasificación
-* Categoría OWASP Top 10: A03:2025-Injection
+* Categoría OWASP Top 10: A05:2025-Injection
 * Control OWASP ASVS: V1.2.4
 * Documentado por: Laura Castillo Ortiz
 ---
