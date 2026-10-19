@@ -2,8 +2,8 @@
 
 ## Clasificación
 
-* **Categoría OWASP Top 10:** A02:2025-Security Misconfiguration
-* **Control OWASP ASVS:** V16.5.1
+* **Categoría OWASP Top 10:** A05:2021-Security Misconfiguration
+* **Control OWASP ASVS:** V7.4.1
 * **Documentado por:** Marcos Ruiz
 
 ---
