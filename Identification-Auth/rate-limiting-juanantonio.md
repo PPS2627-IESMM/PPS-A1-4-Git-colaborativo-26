@@ -40,24 +40,31 @@ function findUserByEmail($email) {
 ## Código mitigado/seguro
 ```php
 <?php
-// Endpoint mitigado en PHP utilizando Redis como almacén en memoria para limitar peticiones
+// Endpoint mitigado en PHP utilizando Redis con operaciones atómicas
 header('Content-Type: application/json');
 
-$redis = new Redis();$redis->connect('127.0.0.1', 6379);
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
 
-// Identificamos el origen por IP (en producción, combinar con identificador de cuenta)
-$ip =$_SERVER['REMOTE_ADDR'];
+// Identificamos el origen por IP
+$ip = $_SERVER['REMOTE_ADDR'];
 $rateKey = "login_attempts:" . $ip;
 
 $maxAttempts = 5;
-$windowSeconds = 900; // Bloqueo durante una ventana de 15 minutos (900s)
+$windowSeconds = 900; // Ventana de 15 minutos (900s)
 
-// MITIGACIÓN: Consultar contador de intentos en Redis antes de procesar lógica pesada
-$attempts = (int)$redis->get($rateKey);
+// MITIGACIÓN ATÓMICA: Incrementamos directamente en Redis.
+// Al usar incr(), evitamos condiciones de carrera entre lectura y escritura.
+$currentAttempts = $redis->incr($rateKey);
 
-if ($attempts >=$maxAttempts) {
-    // Si excede el límite permitido, cortamos inmediatamente con HTTP 429
-    // Se evita consultar la base de datos o ejecutar el coste de CPU de password_verify()
+// Si es la primera petición (devuelve 1), fijamos el tiempo de expiración (TTL)
+// para evitar que la clave quede persistente indefinidamente si el script falla después.
+if ($currentAttempts === 1) {
+    $redis->expire($rateKey, $windowSeconds);
+}
+
+// Comprobamos el límite antes de procesar lógica pesada o hashes criptográficos
+if ($currentAttempts > $maxAttempts) {
     http_response_code(429);
     echo json_encode([
         'status' => 'error',
@@ -66,21 +73,16 @@ if ($attempts >=$maxAttempts) {
     exit;
 }
 
-$email =$_POST['email'] ?? '';
-$password =$_POST['password'] ?? '';
+$email = $_POST['email'] ?? '';
+$password = $_POST['password'] ?? '';
 $user = findUserByEmail($email);
 
-if ($user && password_verify($password,$user['password_hash'])) {
-    // En login exitoso, reiniciamos el contador de la IP
+if ($user && password_verify($password, $user['password_hash'])) {
+    // Si la autenticación es exitosa, reseteamos el contador de la IP
     $redis->del($rateKey);
     echo json_encode(['status' => 'success', 'token' => 'jwt_token_demo']);
 } else {
-    // Si falla la autenticación, incrementamos el contador
-    $redis->incr($rateKey);
-    // Fijamos la expiración solo en el primer fallo registrado
-    if ($attempts === 0) {$redis->expire($rateKey,$windowSeconds);
-    }
-
+    // Retornamos 401 si falla; el incremento ya fue contabilizado atómicamente al inicio
     http_response_code(401);
     echo json_encode(['status' => 'error', 'message' => 'Credenciales inválidas']);
 }
