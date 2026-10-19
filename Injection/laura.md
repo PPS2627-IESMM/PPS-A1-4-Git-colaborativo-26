@@ -1,7 +1,7 @@
 # Inyección SQL (SQLi)
 ## Clasificación
 * Categoría OWASP Top 10: A05:2025-Injection
-* Control OWASP ASVS: V1.2.4
+* Control OWASP ASVS: V1.2.4 (Versión 5.0)
 * Documentado por: Laura Castillo Ortiz
 ---
 ## Descripción
@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 ```
+
 ## Código mitigado/seguro
 ```php
 <?php
@@ -95,3 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 ```
+
+## Bibliografía 
+OWASP ASVS: https://github.com/OWASP/ASVS/blob/master/5.0/en/0x10-V1-Encoding-and-Sanitization.md
