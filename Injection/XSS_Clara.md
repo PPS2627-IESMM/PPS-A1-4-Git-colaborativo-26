@@ -2,7 +2,7 @@
 Cross Site Scripting (XSS) Reflejado
 ## Clasificación
 * Categoría OWASP Top 10: A05:2025-Inyección
-* Control OWASP ASVS: V5.3.3
+* Control OWASP ASVS: V5.3.3 en versión 4.0.3
 * Documentado por: Clara Frigolet Paiva
 ---
 ## Descripción
