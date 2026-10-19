@@ -1,7 +1,7 @@
 # Exposición de datos sensibles en logs de aplicación
 ## Clasificación
 * Categoría OWASP Top 10: [A09:2025-Security Logging and Alerting Failures]
-* Control OWASP ASVS: [V16.2.5]
+* Control OWASP ASVS: [V7.1.1]
 * Documentado por: [Manuel Martínez Ruiz]
 ---
 ## Descripción
