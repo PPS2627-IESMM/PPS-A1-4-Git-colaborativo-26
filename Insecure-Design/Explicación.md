@@ -1,6 +1,6 @@
 # Vulnerabilidad: Subida Ilimitada de Archivos Ejecutables 
 
-**Categoría OWASP Top 10:** Insecure Design (Diseño Inseguro)
+**Categoría OWASP Top 10:** A06:202 - Insecure Design
 **Control OWASP ASVS (v4.0.3):** V12 File Upload Validation Requirements
 
 ---
