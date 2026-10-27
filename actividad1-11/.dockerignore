@@ -1,0 +1,9 @@
+.git
+.env
+.env.*
+*.log
+.DS_Store
+vendor/
+node_modules/
+prueba/
+preproduccion/
